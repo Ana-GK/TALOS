@@ -1,0 +1,20 @@
+docker version					# verzija
+docker run [NAME] 				# zaženi konteiner
+docker run -d [NAME] 				# zaženi konteiner v ozadju
+docker run -i [NAME] 				# zaženi konteiner v interaktivnem načinu
+docker run -v /[PATH]:/var/lib[NAME] [NAME]	# /zunanja shramba /opt/datadir za konteiner [NAME]
+docker run --mount type=bind,source=/[PATH],target=/var/lib/[NAME] [NAME]
+docker volume create [NAME]			# naredi mapo za shranjevanje (ampak to ni treba, ker se mapa sama ustvari z zgornjim ukazom)
+docker volume [UKAZ]				# ukaz, ki naj se izvede na docker volume
+docker attach [NAME or ID] 			# prikaži konteiner, ki teče v ozadju
+docker ps 					# pokaži aktivne konteinerje
+docker ps -a 					# pokaži vse, tudi neaktivne konteinerje
+docker stop [NAME or ID] 			# končaj konteiner
+docker pull 					# prenesi sliko s spleta
+docker exec [COMMAND]				# izvedi ukaz na konteinerju
+docker run -v /opt/datadir:/var/lib[NAME] [NAME]
+docker logs [NAME]				# logi konteinerja
+docker inspect [NAME]				# preglej spremenljivke nekega kontainerja
+docker start [IME KONTAINERJA]			# zaženi kontainer, ki že obstaja
+docker exec -it [IME KONTAINERJA] bash		# vstopi v kontainer, ki si ga prej zagnal
+docker kill [NAME]				# ubi kontainer

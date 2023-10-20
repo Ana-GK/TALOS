@@ -1,0 +1,31 @@
+Interactive carteasian space control on Talos
+
+If you want to control the real robot in cartesian space:
+
+    Launch the robot in the dynamical mode
+        Start default controllers
+        Stop default controllers once the robot is in the right position
+        Start torque control
+    Execute: rosrun pal_locomotion StartWBCAction
+
+And then open a new terminal pointing to the robot (export ROS_MASTER_URI=http://talos-2c:11311) and execute:
+
+If you want to control it using interactive markers:
+
+roslaunch talos_wbc interactive_markers.launch ns:=/biped_walking_dcm_controller/wbc
+rviz -d ~/.rviz/marker_demo.rviz
+
+
+If you want to control it by rostopic:
+
+roslaunch talos_wbc interactive_markers.launch ns:=/biped_walking_dcm_controller/wbc source_data:=topic_reflexx_typeII
+
+You will be able to modify the desired pose of the end effectors by publishing on the following topics:
+
+/biped_walking_dcm_controller/wbc/gripper_left_base_link_goal
+/biped_walking_dcm_controller/wbc/gripper_right_base_link_goal
+
+As always, please have the emergency button ready for security.
+
+
+

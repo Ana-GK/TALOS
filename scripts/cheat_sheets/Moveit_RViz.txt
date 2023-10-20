@@ -1,0 +1,42 @@
+
+# MoveIt RViz
+
+# Talos handbook - page 135
+
+roslaunch talos_gazebo talos_gazebo.launch
+
+roslaunch talos_controller_configuration_gazebo default_controllers.launch
+
+roslaunch talos_moveit_config moveit_rviz.launch
+
+# Click on Use cartesian coordinates
+# Set Start State and Goal State (choose from menu or move the arm/leg)
+# Torso doesn't have cartesian path (kinematics solver)
+# Click Plan (it should tell if the path was calculated)
+# Click Execute (robot shoul move in gazebo)
+
+
+# Talos handbook - page 149
+# Kinematic solver
+# WBC - whole body control
+
+rostopic echo /move_group/status
+rostopic echo /tf
+
+# View tf frames
+rosrun rqt_tf_tree rqt_tf_tree
+
+# Broadcasts tf messages
+/robot_state_publisher
+
+rosservice call /compute_ik
+
+rosservice call /compute_fk
+
+rosservice call /compute_cartesian_path
+
+client = rossvcclient("/compute_ik")
+
+client = rossvcclient("/compute_fk")
+
+client = rossvcclient("/compute_cartesian_path")

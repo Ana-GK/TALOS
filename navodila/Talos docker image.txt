@@ -1,0 +1,64 @@
+Talos docker image
+
+There is a docker image with Talos simulation.
+
+Images can be accessed via external gitlab (ask Rok Pahič or Mihael Simonič for access).
+Setting up TALOS docker on Ubuntu 18.04+
+
+Get the docker image from PAL repository:
+
+docker login registry.gitlab.com
+docker pull registry.gitlab.com/pal-robotics/ijs/dockers
+
+Since the upgrade (05. 2021), this is the correct docker that most matches the actual state of the robot:
+
+docker pull registry.gitlab.com/pal-robotics/ijs/dockers/pal-ferrum-pal-metapkg-development-talos
+
+
+If you have a NVIDIA graphic card and use proprietary nvidia driver, you need to install nvidia-docker. For Ubuntu 18.04 install nvidia-docker 1.0:
+
+wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker_1.0.1_amd64.tar.xz
+sudo tar --strip-components=1 -C /usr/bin -xvf /tmp/nvidia-docker*.tar.xz && rm /tmp/nvidia-docker*.tar.xz
+
+For Ubuntu 20.04 install version 2.0 of nvidia-docker. as explained on the PAL GitHUb. There, they link you to the nvidia-docker installation page.
+
+Get PAL docker utils and prepare persistent workspace:
+
+git clone https://github.com/pal-robotics/pal_docker_utils
+mkdir $HOME/exchange
+
+Using TALOS docker
+
+If using nvidia-docker first run:
+
+sudo -b nohup nvidia-docker-plugin > /tmp/nvidia-docker.log
+
+For old docker image (pre-upgrade), run the following command to open a terminator window within docker container
+
+./pal_docker.sh --name talos_sim -it registry.gitlab.com/pal-robotics/ijs/dockers terminator
+
+For new docker image (after 05. 2021 upgrade) run
+
+sudo ./pal_docker.sh --name talos1 -it registry.gitlab.com/pal-robotics/ijs/dockers/pal-ferrum-pal-metapkg-development-talos bash
+
+This will open the docker in the same bash. To open a terminator window that runs in the docker, run
+
+terminator -u
+
+
+Alternative option using Singularity
+
+    Install Singularity: https://sylabs.io/guides/3.9/user-guide/quick_start.html#quick-installation-steps
+    Pull Talos image from gitlab container registry
+
+        singularity pull --docker-login docker://registry.gitlab.com/pal-robotics/ijs/dockers/pal-ferrum-pal-metapkg-development-talos
+
+    Start singularity container
+
+        singularity exec pal-ferrum-pal-metapkg-development-talos_latest.sif bash
+
+    Now you can run arbitrary commands inside. Let's start Gazebo for example:
+
+Singularity> source /opt/pal/ferrum/setup.bash 
+Singularity> roslaunch talos_gazebo talos_gazebo.launch 
+

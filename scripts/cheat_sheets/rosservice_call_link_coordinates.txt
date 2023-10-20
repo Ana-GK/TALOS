@@ -1,0 +1,37 @@
+# Get link coordinates relative to the ground plane (look up link names in gazebo)
+
+rosservice call /gazebo/get_link_state "link_name: 'base_link'
+reference_frame: ''" 
+
+rosservice call /gazebo/get_link_state "link_name: 'leg_left_1_link'
+reference_frame: ''" 
+
+rosservice call /gazebo/get_link_state "link_name: 'leg_left_6_link'
+reference_frame: ''" 
+
+# Get link coordinates relative to the base link (or some other link)
+
+rosservice call /gazebo/get_link_state "link_name: 'head_2_link'
+reference_frame: 'base_link'" 
+
+
+
+# properties
+
+rosservice call /gazebo/get_link_properties "link_name: 'head_2_link'"
+
+
+# Group names (from RViz)
+roslaunch talos_moveit_config moveit_rviz.launch
+
+'both_arms_torso'
+'both_legs'
+'gripper_left'
+'gripper_right'
+'left_arm'
+'left_arm_torso'
+'left_leg'
+'right_arm'
+'right_arms_torso'
+'right_leg'
+'torso'

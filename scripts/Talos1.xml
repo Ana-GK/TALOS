@@ -1,0 +1,35 @@
+<!-- ======================================================
+	MuJoCo model
+	
+	Model   : Talos - body chain
+	Author  : Zvezdan Loncarevic, Leon Zlajpah
+
+	Copyright 2021 IJS 
+
+====================================================== -->
+
+<mujoco model="talos">
+	<include file="haptix_common.xml"/>
+
+	<include file="Talos_Dependencies.xml"/>
+
+	<worldbody>
+		<light directional="false" cutoff="135" exponent="10" diffuse=".7 .7 .7" pos="0.4 -0.2 5.5" dir="-0.4 0.2 -5.5" specular=".3 .3 .3"/>
+		<geom name="ground" size="4 4 4" pos="0 0 -0.001" type="plane" conaffinity="9" contype="1" material="table" />
+		<site group="2" type="cylinder" pos="0.5 0 0" quat="0.70711 0 0.70711 0" size="0.005 0.5" rgba="1 0 0 1"/>
+		<site group="2" type="cylinder" pos="0 0.5 0" quat="0.70711 0.70711 0 0" size="0.005 0.5" rgba="0 1 0 1"/>
+		<site group="2" type="cylinder" pos="0 0 0.5" quat="1 0 0 0" size="0.005 0.5" rgba="0 0 1 1"/>
+
+		<body name="Target" mocap="true" pos="0 0 0" axisangle="1 0 0 0">
+			<site group="2" type="cylinder" pos="0.05 0 0  " quat="0.70711 0 0.70711 0" size="0.01 0.05" rgba="1 0 0 1"/>
+			<site group="2" type="cylinder" pos="0 0.05 0  " quat="0.70711 0.70711 0 0" size="0.01 0.05" rgba="0 1 0 1"/>
+			<site group="2" type="cylinder" pos="0 0   0.05" quat="1 0 0 0"             size="0.01 0.05" rgba="0 0 1 1"/>
+			<site group="1" name="Target" type="box" pos="0 0 0" size="0.02 0.02 0.02" rgba="1 1 1 0.5"/>
+		</body>
+		
+		<include file="Talos_Chain.xml"/>
+	</worldbody>
+
+	<include file="Talos_act_pos.xml"/>
+	<include file="Talos_sensors.xml"/>
+</mujoco>

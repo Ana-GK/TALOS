@@ -1,0 +1,175 @@
+################################################################################
+
+rosservice info /compute_ik
+Node: /move_group
+URI: rosrpc://cobotat4:42045
+Type: moveit_msgs/GetPositionIK
+Args: MessageType IkRequest
+
+#####
+
+rosmsg show moveit_msgs/GetPositionIKRequest
+% A service call to carry out an inverse kinematics computation
+% The inverse kinematics request
+PositionIKRequest IkRequest
+
+#####
+
+rosmsg show moveit_msgs/GetPositionIKResponse
+
+
+% The returned Solution 
+% (in the same order as the list of joints specified in the IKRequest message)
+RobotState Solution
+
+MoveItErrorCodes ErrorCode
+
+################################################################################
+
+rosservice info /compute_fk
+Node: /move_group
+URI: rosrpc://cobotat4:42045
+Type: moveit_msgs/GetPositionFK
+Args: MessageType Header FkLinkNames RobotState
+
+#####
+
+rosmsg show moveit_msgs/GetPositionFKRequest
+% A service definition for a standard forward kinematics service
+% The frame_id in the Header message is the frame in which 
+% the forward kinematics poses will be returned
+std_msgs/Header Header
+
+% A vector of link name for which forward kinematics must be computed
+char[] FkLinkNames
+
+% A robot state consisting of joint names and joint positions to be used for forward kinematics
+RobotState RobotState
+
+#####
+
+rosmsg show moveit_msgs/GetPositionFKResponse
+
+% The resultant vector of PoseStamped messages that contains the (stamped) poses of the requested links
+geometry_msgs/PoseStamped[] PoseStamped
+
+% The list of link names corresponding to the poses
+char[] FkLinkNames
+
+MoveItErrorCodes ErrorCode
+
+################################################################################
+
+rosservice info /compute_cartesian_path
+Node: /move_group
+URI: rosrpc://cobotat4:42045
+Type: moveit_msgs/GetCartesianPath
+Args: MessageType Header StartState GroupName LinkName Waypoints MaxStep JumpThreshold AvoidCollisions PathConstraints
+
+#####
+
+rosmsg show moveit_msgs/GetCartesianPathRequest
+% Define the frame for the specified Waypoints
+std_msgs/Header Header
+
+% The start at which to start the Cartesian path
+RobotState StartState
+
+% Mandatory name of group to compute the path for
+char GroupName
+
+% Optional name of IK link for which Waypoints are specified.
+% If not specified, the tip of the group (which is assumed to be a chain)
+% is assumed to be the link
+char LinkName
+
+% A sequence of Waypoints to be followed by the specified link, 
+% while moving the specified group, such that the group moves only
+% in a straight line between Waypoints
+geometry_msgs/Pose[] Waypoints
+
+% The maximum distance (in Cartesian space) between consecutive points
+% in the returned path. This must always be specified and > 0
+double MaxStep
+
+% If above 0, this value is assumed to be the maximum allowed distance 
+% (L infinity) in configuration space, between consecutive points.
+% If this distance is found to be above the maximum threshold, the path 
+% computation fails.
+double JumpThreshold
+
+% Set to true if collisions should be avoided when possible
+logical AvoidCollisions
+
+% Specify additional constraints to be met by the Cartesian path
+Constraints PathConstraints
+
+#####
+
+rosmsg show moveit_msgs/GetCartesianPathResponse
+
+
+% The state at which the computed path starts
+RobotState StartState
+
+% The computed Solution trajectory, for the desired group, in configuration space
+RobotTrajectory Solution
+
+% If the computation was incomplete, this value indicates the Fraction of the path
+% that was in fact computed (nr of waypoints traveled through)
+double Fraction
+
+% The error code of the computation
+MoveItErrorCodes ErrorCode
+
+################################################################################
+
+>> rosservice info /compute_ik
+Node: /move_group
+URI: rosrpc://cobotat4:42045
+Type: moveit_msgs/GetPositionIK
+Args: MessageType IkRequest
+
+>> rosservice info /compute_fk
+Node: /move_group
+URI: rosrpc://cobotat4:42045
+Type: moveit_msgs/GetPositionFK
+Args: MessageType Header FkLinkNames RobotState
+
+>> rosservice info /compute_cartesian_path
+Node: /move_group
+URI: rosrpc://cobotat4:42045
+Type: moveit_msgs/GetCartesianPath
+Args: MessageType Header StartState GroupName LinkName Waypoints MaxStep JumpThreshold AvoidCollisions PathConstraints
+
+ik_req.IkRequest
+
+ans = 
+
+  struct with fields:
+
+          MessageType: 'moveit_msgs/PositionIKRequest'
+            GroupName: ''
+           RobotState: [1×1 struct]
+          Constraints: [1×1 struct]
+      AvoidCollisions: 0
+           IkLinkName: ''
+          PoseStamped: [1×1 struct]
+          IkLinkNames: {0×1 cell}
+    PoseStampedVector: [0×1 struct]
+              Timeout: [1×1 struct]
+             Attempts: 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+

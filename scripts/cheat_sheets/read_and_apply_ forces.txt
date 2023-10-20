@@ -1,0 +1,89 @@
+source /opt/pal/ferrum/setup.bash 
+
+rostopic echo /right_ankle_ft
+rostopic echo /left_ankle_ft
+
+rostopic echo /right_wrist_ft
+rostopic echo /left_wrist_ft
+
+
+sub_r = rossubscriber('/right_wrist_ft');
+sub_l = rossubscriber('/left_wrist_ft');
+
+msg_r = receive(sub_r, 1); % 1 is timeout in seconds
+msg_l = receive(sub_l, 1); % 1 is timeout in seconds
+
+msg_r.Wrench.Force.X
+msg_r.Wrench.Force.Y
+msg_r.Wrench.Force.Z
+
+
+
+
+# Forces templates (right and left wrist)
+
+1.
+
+rosservice call /gazebo/apply_body_wrench "body_name: 'gripper_right_inner_double_link'
+reference_frame: ''
+reference_point: {x: 0.0, y: 0.0, z: 0.0}
+wrench:                                  
+  force: {x: 7.0, y: 0.0, z: 0.0}
+  torque: {x: 0.0, y: 0.0, z: 0.0}
+start_time: {secs: 0, nsecs: 0}
+duration: {secs: 5, nsecs: 0}"
+
+2.
+
+rosservice call /gazebo/apply_body_wrench "body_name: 'gripper_right_inner_double_link'
+reference_frame: ''
+reference_point: {x: 0.0, y: 0.0, z: 0.0}
+wrench:                                  
+  force: {x: 0.0, y: 7.0, z: 0.0}
+  torque: {x: 0.0, y: 0.0, z: 0.0}
+start_time: {secs: 0, nsecs: 0}
+duration: {secs: 5, nsecs: 0}"
+
+3.
+
+rosservice call /gazebo/apply_body_wrench "body_name: 'gripper_right_inner_double_link'
+reference_frame: ''
+reference_point: {x: 0.0, y: 0.0, z: 0.0}
+wrench:                                  
+  force: {x: 0.0, y: 0.0, z: 7.0}
+  torque: {x: 0.0, y: 0.0, z: 0.0}
+start_time: {secs: 0, nsecs: 0}
+duration: {secs: 5, nsecs: 0}"
+
+4.
+
+rosservice call /gazebo/apply_body_wrench "body_name: 'gripper_left_inner_double_link'
+reference_frame: ''
+reference_point: {x: 0.0, y: 0.0, z: 0.0}
+wrench:                                  
+  force: {x: 7.0, y: 0.0, z: 0.0}
+  torque: {x: 0.0, y: 0.0, z: 0.0}
+start_time: {secs: 0, nsecs: 0}
+duration: {secs: 5, nsecs: 0}"
+
+5.
+
+rosservice call /gazebo/apply_body_wrench "body_name: 'gripper_left_inner_double_link'
+reference_frame: ''
+reference_point: {x: 0.0, y: 0.0, z: 0.0}
+wrench:                                  
+  force: {x: 0.0, y: 7.0, z: 0.0}
+  torque: {x: 0.0, y: 0.0, z: 0.0}
+start_time: {secs: 0, nsecs: 0}
+duration: {secs: 5, nsecs: 0}"
+
+6.
+
+rosservice call /gazebo/apply_body_wrench "body_name: 'gripper_left_inner_double_link'
+reference_frame: ''
+reference_point: {x: 0.0, y: 0.0, z: 0.0}
+wrench:                                  
+  force: {x: 0.0, y: 0.0, z: 7.0}
+  torque: {x: 0.0, y: 0.0, z: 0.0}
+start_time: {secs: 0, nsecs: 0}
+duration: {secs: 5, nsecs: 0}"

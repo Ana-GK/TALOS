@@ -1,0 +1,10 @@
+show_urdf('talos.urdf')
+
+[p,R,J]=kinmodel_talos_arm(q,tcp)
+
+
+tcp=rp2t(rot_z(-pi/4),[0 0 0.2]');
+q=[0 -0.2 0 -1.5 0 1.5 0.7854]';
+
+
+doc talos_arm_haptix

@@ -1,0 +1,12 @@
+VirtualBox image with Gazebo for Talos
+
+Template:Working
+Usage
+
+    From a terminal emulator run ./start_gazebo_with_default_controllers.sh
+
+
+Useful links
+
+    https://de.mathworks.com/help/robotics/examples/get-started-with-gazebo-and-a-simulated-turtlebot.html
+    http://coding4streetcred.com/blog/post/VirtualBox-Configuring-Static-IPs-for-VMs

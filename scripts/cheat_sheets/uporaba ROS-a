@@ -1,0 +1,4 @@
+roscd talos_controller_configuration_gazebo # prideš v mapo z launch file-i
+
+root@cobotat4:/opt/pal/ferrum/share/talos_description/urdf # urdf-ji
+

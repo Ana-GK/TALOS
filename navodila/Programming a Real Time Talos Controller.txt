@@ -1,0 +1,176 @@
+Programming a Real Time Talos Controller
+
+This document explains how to write a real time controller in your own ROS package.
+See also File:Talos handbook.pdf, Section 30: ros_control, page 113
+Contents
+
+    1 Example ROS package
+        1.1 Additional notes
+        1.2 Pushing your package to a new Git project
+        1.3 More learning examples
+    2 Testing Controller in Simulation
+        2.1 Launching your controller
+    3 Deploying your Controller to the Robot
+    4 Runing your Controller on the robot
+        4.1 Additional notes
+
+Example ROS package
+
+We have prepared an exmaple ROS package on our GitLab repo, where the entire necessary file structure is prepared.
+
+Go to your workspace and clone the package
+
+ pal@development:~/your_ws/src$ git clone https://repo.ijs.si/rbevec/ros_control_example.git
+
+You will want to change this package to suit your needs, so let's start with the package name.
+
+    Rename the cloned folder to your desired package name.
+
+Now change the package name in:
+
+    CMakeLists.txt
+
+    project(<your_package_name>)
+
+    package.xml
+
+    <name><your_package_name></name>
+
+    launch/upload_test_controller.launch
+
+    <rosparam command="load" file="$(find <your_package_name>)/config/test_controller_config.yaml"/>
+
+    controller_plugins.xml
+
+    <library path="lib/lib<your_package_name>">
+
+You can now try to build your package
+
+ catkin build <your_package_name>
+
+After building <your_package_name> for the first time, you need to source the setup.bash. You must have already added the ~/<workspace>/devel/setup.bash to your .bashrc (echo 'source ~/catkin_ws/devel/setup.bash' >> .bashrc)
+
+ source ~/.bashrc
+
+Additional notes
+
+The example package has some other names that you can change to your liking. You may change/add the source .cpp and .h file names. Make sure to change/add them in the CMakeLists.txt as well. You may change the source code namespace tuti or even remove it. You may change the controller Class name TestController. You may change the namespace for the ROS controller type fruti or remove it. You may rename your controller type name test_controller_type and controller name test_controller_name. Also each controller has its own .yaml and .launch file, which you can name as you wish. Make sure to change the names everywhere.
+
+You can develop several controllers in one package. Simply create a new <class> inside the <library> tags in controller_plugins.xml
+Pushing your package to a new Git project
+
+Now you created your own controller by modifying the example package. It is recommended to push it to a source control system (versioning, backup, sharing...). The instructions here refer to our Institute GitLab server and assume you have access to it (https://www.ijs.si/ijsw/Repozitorij%20GIT). The example package already belongs to a git project, but you do not have the rights to, nor should you, push to that git.
+
+    Create a new project on GitLab, recommended visibility level: internal
+    Go to your package root folder
+
+ roscd <your_package_name>
+
+    Change the git origin to your git project
+
+ git remote set-url origin <git_link>
+
+Example
+
+ git remote set-url origin git@repo.ijs.si:rbevec/your_project_name.git
+
+    You can check if it is set with:
+
+ git remote -v
+
+    Now commit your changes
+
+ git commit -am "modified controller"
+
+    And push to your git
+
+ git push
+
+More learning examples
+
+The ros_controllers_tutorials mentioned in the Talos Handbook are currently not publicly available, so we made a local repo copy at: https://repo.ijs.si/rbevec/ros_controllers_tutorials.git Here you can find more examples of how to use different hardware interfaces, like IMU, force, joint and so on...
+Testing Controller in Simulation
+
+When your controller is ready for testing, you should first try it in the simulation environment. Let's start the simulation environment:
+
+    Open a terminal and start gazebo (your latest devel/setup.bash must always be sourced)
+
+ roslaunch talos_gazebo talos_gazebo.launch
+
+    Open a terminal and start the default controllers. This must me done a couple of seconds after the gazebo. 
+
+ roslaunch talos_controller_configuration_gazebo default_controllers.launch
+
+    If you wait too long you will see the following error in the gazebo terminal:
+
+ [ERROR] [1507234274.722884605, 17.999000000]: MoveitSimpleControllerManager: Action client not connected: left_arm_controller/follow_joint_trajectory
+
+Just Ctrl-C the controllers and gazebo and start again. If you've done it right the gazebo terminal will print out that it found 6 controllers and not less:
+
+ [ INFO] [1507234572.133582347, 4.712000000]: Returned 6 controllers in list
+
+Launching your controller
+
+The launch file of your controller enables you to load and start the controller in one step.
+
+    Open a new terminal
+
+ roslaunch <your_package_name> <your_controller_launch_file>
+
+Example
+
+ roslaunch ros_control_example upload_test_controller.launch
+
+The test_controller writes to the gazebo terminal window
+
+    To stop the controller just hit Ctrl-C in the terminal window where you launched the controller.
+
+Deploying your Controller to the Robot
+
+For your controller to run in real time, a special deployment procedure is designed to install your controller on the robot.
+
+    The package you wrote in the previous step must first successfully build.
+
+ catkin build <your_package_name>
+
+    This will build your package to the build and devel folders in your workspace.
+    Go to the root of your workspace.
+    Make sure to source the newly built package. 
+
+ source devel/setup.bash
+
+    Now you deploy the controller(s) from your package to the robot
+
+ rosrun pal_deploy deploy.py --package <your_package_name> talos-2c
+
+    Answer yes to copy question, when prompted, the password is: pal
+
+Runing your Controller on the robot
+
+    Open a new terminal and ssh to the robot
+
+ ssh pal@talos-2c
+
+    Go to your installed package path
+
+ roscd <your_package_name>
+
+your path should be
+
+ pal@talos-2c:~/deployed_ws/share/<your_package_name>$
+
+    Now you need to restart the deployer:
+
+    Go to the WebCommander http://talos-2c:8080to the startup tab.
+    Stop deployer
+    Stop ros_bringup
+    Start ros_bringup
+    Start deployer
+    They must be green
+    Diagnostics should be all green now
+
+    Now you can launch your controller:
+
+ roslaunch <your_package> <controller_launch_file>
+
+

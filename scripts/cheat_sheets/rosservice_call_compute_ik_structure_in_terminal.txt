@@ -1,0 +1,92 @@
+rosservice call /compute_ik "ik_request:
+  group_name: ''
+  
+  
+  
+  robot_state:
+  
+    joint_state:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: ''
+      name: ['']
+      position: [0]
+      velocity: [0]
+      effort: [0]
+      
+    multi_dof_joint_state:
+      header:
+        seq: 0
+        stamp: {secs: 0, nsecs: 0}
+        frame_id: ''
+      joint_names: ['']
+      transforms:
+      - translation: {x: 0.0, y: 0.0, z: 0.0}
+        rotation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}
+      twist:
+      - linear: {x: 0.0, y: 0.0, z: 0.0}
+        angular: {x: 0.0, y: 0.0, z: 0.0}
+      wrench:
+      - force: {x: 0.0, y: 0.0, z: 0.0}
+        torque: {x: 0.0, y: 0.0, z: 0.0}
+        
+    attached_collision_objects:
+    - link_name: ''
+      object:
+        header:
+          seq: 0
+          stamp: {secs: 0, nsecs: 0}
+          frame_id: ''
+        id: ''
+        type: {key: '', db: ''}
+        primitives:
+        - type: 0
+          dimensions: [0]
+        primitive_poses:
+        - position: {x: 0.0, y: 0.0, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}
+        meshes:
+        - triangles:
+          - vertex_indices: [0, 0, 0]
+          vertices:
+          - {x: 0.0, y: 0.0, z: 0.0}
+        mesh_poses:
+        - position: {x: 0.0, y: 0.0, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}
+        planes:
+        - coef: [0.0, 0.0, 0.0, 0.0]
+        plane_poses:
+        - position: {x: 0.0, y: 0.0, z: 0.0}
+          orientation: {x: 0.0, y: 0.0, z: 0.0, w: 0.0}
+        operation: 0
+      touch_links: ['']
+      detach_posture:
+        header:
+          seq: 0
+          stamp: {secs: 0, nsecs: 0}
+          frame_id: ''
+        joint_names: ['']
+        points:
+        - positions: [0]
+          velocities: [0]
+          accelerations: [0]
+          effort: [0]
+          time_from_start: {secs: 0, nsecs: 0}
+      weight: 0.0
+      
+    is_diff: false
+    
+    
+    
+    
+  constraints:
+    name: ''
+    joint_constraints:
+    - {joint_name: '', position: 0.0, tolerance_above: 0.0, tolerance_below: 0.0,
+      weight: 0.0}
+    position_constraints:
+    - header:
+        seq: 0
+  attempts: 0" s: 0, nsecs: 0} 0.0, z: 0.0, w: 0.0}0.0}
+

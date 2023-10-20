@@ -1,0 +1,62 @@
+cd pal_docker_utils/scripts
+
+# ni potrebno, če je če že obstaja kontainer
+sudo ./pal_docker.sh --name talos1 -it registry.gitlab.com/pal-robotics/ijs/dockers/pal-ferrum-pal-metapkg-development-talos bash
+
+docker start talos1
+docker exec -it talos1 bash
+
+terminator -u
+
+# rapolovi po širini
+ctrl + shift + e
+# razpolovi po višini
+ctrl + shift + o
+
+# v vseh oknih
+source /opt/pal/ferrum/setup.bash
+cd ../home/user/exchange
+
+# Gazebo
+roslaunch talos_gazebo talos_gazebo.launch
+
+# Za zgornji del telesa (in zraven še postavi Talosa v začetni položaj)
+roslaunch talos_controller_configuration_gazebo default_controllers.launch
+
+# Za celo telo
+roslaunch talos_controller_configuration position_controllers.launch
+
+# Controllers
+rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
+
+# rviz viewer, kjer nastaviš center Talosa v tisti sklep, kot hočeš:
+rviz
+map -> base link
+add: robot model
+
+
+# Za ustavitev konteinerja talos1:
+docker stop talos1
+ALI docker kill talos1
+# Za odstranitev konteinerja talos1
+docker rm talos1
+# Za odstranit volume
+docker volume rm [NAME]
+
+
+
+
+# Create workspace
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/
+catkin_make
+
+# Add workspace to path for ROS
+source ~/catkin_ws/devel/setup.bash
+
+# Add to /home/user.bashrc (if ROS is on computer)
+# Otherwise source in terminator
+source /opt/ros/melodic/setup.bash
+source /opt/pal/ferrum/setup.bash
+
+cd /home/cobotat4/exchange

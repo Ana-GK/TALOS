@@ -1,0 +1,211 @@
+Talos
+
+This document describes how to use the Talos robot.
+
+Before you start
+
+    Know that Talos is not a toy, but a very expensive piece of hardware. Therefore, procedures for working with Talos are somewhat different.
+    Talos must always be tethered to the crane. Any kind of operations that involve disconnecting the crane tether are strictly forbidden!
+    For now, 2 people must always be present when working with the robot - one to operate the robot and one to spot the robot during operation.
+    For now, you need to obtain permission from department head to perform an experiment on the robot. He needs to OK your procedures BEFORE you start.
+    Pay extra attention to the safety of the robot, we are not replacing it anytime soon.
+
+Contents
+
+    1 Basics
+        1.1 Starting the robot
+        1.2 Starting default controllers
+        1.3 Rviz Visualization
+        1.4 Stopping the robot
+    2 Network Setup
+        2.1 Adding computer to VPN
+    3 Usage cases
+        3.1 Demos
+        3.2 (Re)playing joint trajectories
+        3.3 Vision
+    4 Safety
+    5 Troubleshooting
+        5.1 Red light in diagnostics
+        5.2 Arm(s) stay down when starting default controllers
+        5.3 Basestation is unreachable
+        5.4 Controllers stopped, motor error on all links
+        5.5 ethernet link is down on the robot
+        5.6 WebCommander is not reachable
+
+Basics
+Starting the robot
+
+see also File:Talos handbook.pdf, page 45
+
+    Make sure that the emergency stop button is released. Be aware there are two emergency buttons, one on the back of the robot and another tethered.
+    Lift the robot so it's hanging on the crane and its feet do not touch the ground.
+    Turn on the robot by flipping the power switch. Check the battery level on the indicator and connect the charger if the battery level is red (30% or less).
+    Wait for a double beep (roughly 5s)
+    Start the computers by pressing the PC ON button
+    Check the status of the robot in the WebCommander http://talos-2c:8080 The tab diagnostics must have all green lights.
+
+Starting default controllers
+
+This starts the stability, walking and other demo stuff
+
+    Make sure to spread the arms, so they are not touching the thighs!!! You will scratch the robot otherwise.
+    Open a terminal and connect to the Talos control computer, password: pal
+
+ssh pal@talos-2c
+
+    Launch the default controllers
+
+roslaunch talos_controller_configuration default_controllers.launch
+
+    The robot will execute walking pose. If arm(s) stay down, see troubleshooting.
+
+Rviz Visualization
+
+    Open a new terminal
+    Connect to the robot ros master
+
+export ROS_MASTER_URI=http://talos-2c:11311
+
+    Run rviz with selected configuration
+
+rosrun rviz rviz -d ~/.rviz/demo.rviz  
+
+Stopping the robot
+
+    Lift the robot
+    The assistant must be holding the arms, when the robot is turned off, because they will drop and potentially hit the robot.
+    Turn off the PC (round button, press once)
+    Wait for PC to turn off
+    Turn off electronics (sqaure switch)
+    Move the robot on the crane under the long rail next to the wall (otherwise crossrail will bend)
+    Lower the robot, so the feet are touching the ground. The legs must be partially supporting the robot, when resting.
+    Plug in the crane remote to the charger
+
+Network Setup
+Adding computer to VPN
+
+The purpose of this is to be able to access the Talos Basestation repositories for packages and updates.
+
+If your computer is out of the Talos network (your is IP 178.172.42.xxx) and you want to access the repos on the Basestation, you need the following setup.
+
+    Add the user on the basestation
+
+        root@basestation# addVpnUser -u <your_pc_hostname> -i <xxx_from_ip>
+        Example:
+        root@basestation# addVpnUser -u jasmin -i 102
+
+    Change password for this user:
+
+        root@basestation# passwd <your_pc_hostname>
+
+    Your computer /etc/hosts file needs to have the following lines (change the basestation_public ip)
+
+        178.172.42.151 basestation_public
+        10.68.1.1 basestation
+        10.68.1.1 archives.basestation
+
+    Edit credentials file on your computer
+
+        sudo editor /etc/openvpn/user
+        The first line should be the username for the vpn user (<your_pc_hostname>), the second one should match the password for this user.
+
+    Restart the vpn on your computer
+
+        sudo service openvpn restart
+
+    Check if you are on the VPN
+
+        ifconfig
+        you should see a tun0 adapter with the IP 10.68.1.xxx
+
+    now you can use sudo apt-get update
+
+Usage cases
+Demos
+
+Demos using position controllers
+
+    Launching walking demo on Talos
+    Drawing demo
+    https://repo.ijs.si/hcr/talos/custom-moves
+
+Demos using full body torque control:
+
+    Launching torque controller on Talos
+    Launching grasping demo on Talos
+    Interactive carteasian space control on Talos
+
+Demos using upper body only torque control:
+
+    Launching gravity compensation mode on Talos
+    Launching impedance controllers on Talos
+
+
+(Re)playing joint trajectories
+
+Use https://github.com/pal-robotics/play_motion
+
+Example:
+
+rosrun play_motion play_motion 
+rosrun play_motion run_motion wave
+rosrun actionlib axclient.py /play_motion
+
+See also https://repo.ijs.si/hcr/talos/custom-moves
+Vision
+
+    See Using the Talos RGBD stack
+
+Safety
+
+    Joint limit safety is only enabled when using WBC in the real robot, not in simulation.
+    Self-collision safety is only supported in the kinematic WBC and not with dynamic WBC. [1]
+
+Troubleshooting
+Red light in diagnostics
+
+    Go to the WebCommander http://talos-2c:8080to the startup tab.
+    Stop deployer
+    Stop ros_bringup
+    Start ros_bringup
+    Start deployer
+    They must be green otherwise start again
+    Diagnostics should be all green now, if not do complete startup.
+
+Arm(s) stay down when starting default controllers
+
+Execute walking pose
+Basestation is unreachable
+
+Someone else is probably using the same IP as you. Try sudo service openvpn restart.
+Controllers stopped, motor error on all links
+
+Probably some safety violation occurred. Check using: pal-log deployer cat and guide the robot to a safe configuration.
+
+Then you can restart key ros components using the following sequence
+
+pal-stop deployer && pal-stop ros_bringup && pal-start ros_bringup && pal-start deployer
+
+Finally run the default controllers to check if everything is ok, before starting any other controller.
+ethernet link is down on the robot
+
+You probably restarted the deployer while having the emergency button pressed.
+
+Find out process ids of deployer using ps -aux | grep deployer and then stop each of them using kill -9 ID.
+
+You can kill all processes at once: ps -aux | grep deployer | awk '{print $2}' | head -4 | xargs kill -9
+WebCommander is not reachable
+
+Try to connect to the robot using direct connection between development computer and the robot. WebCommander address is in this case http://10.68.0.1:8080/. If this works, check following:
+
+    whether wireless connection works
+    whether tun0 interface is enabled (if not, this means that the VPN is down)
+    whether system time is correct (VPN connection won't work if the certificate in /etc/openvpn/client.crt is not yet valid or expired)
+
+In the later case, a temporary workaround is:
+
+    Establish ssh connection ssh pal@10.68.0.1 or ssh pal@talos-2m and then ssh talos-2c from within talos-2m
+    Change date using sudo date -s "May 25 2020 11:32:00" (or whatever time between July 2017 and June 2037)
+    Restart VPN sudo service openvpn restart
+    Restart NTP sudo service ntp restart (to sync the time with basestation)
+    Now WebCommander should be reachable through http://talos-2c:8080/ as usual

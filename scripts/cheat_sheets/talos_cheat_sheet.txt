@@ -1,0 +1,84 @@
+cd pal_docker_utils/scripts
+
+# not necessary if container already exists
+sudo ./pal_docker.sh --name talos1 -it registry.gitlab.com/pal-robotics/ijs/dockers/pal-ferrum-pal-metapkg-development-talos bash
+
+# start container
+docker start talos1
+docker exec -it talos1 bash
+
+terminator -u
+
+# split in half vertically
+ctrl + shift + e
+# split in half horizontally
+ctrl + shift + o
+
+# in all windows
+source /opt/pal/ferrum/setup.bash
+
+# launch gazebo
+roslaunch talos_gazebo talos_gazebo.launch
+
+# run default controlers
+roslaunch talos_controller_configuration_gazebo default_controllers.launch
+
+# run position controlers (don't run if you want to run do_step)
+roslaunch talos_controller_configuration position_controllers.launch
+
+# do a step (in a seperate window)
+
+# STEP L LEG
+rosservice call /walking_controller/do_step "step:
+  pose:
+    x: 0.3
+    y: 0.3
+    theta: 0.0
+  leg: 1"
+
+# STEP R LEG
+rosservice call /walking_controller/do_step "step:
+  pose:
+    x: -0.3
+    y: -0.3
+    theta: 0.0
+  leg: 2"
+
+# leg 1 LEFT
+# leg 2 RIGHT
+
+# problem with do_step - Talos can make only 1 step with this command, because it isn't in the right position for a second step 
+
+# change joint angle
+rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
+
+# reset
+rosservice call /gazebo/reset_world 		# postavi Talosa pokoncu
+rosservice call /gazebo/reset_simulation 	# postavi Talosa pokoncu in resetira čas
+rosrun play_motion run_motion walk_pose 	# postavi Talosa v prvoten položaj
+
+# path to file for recording angles (saved in src in catkin_ws):
+/home/cobotat2/exchange/catkin_ws/src/Motion_tracker-Tilen-save_walking_angles.py
+
+# set position
+rostopic pub -1 /gazebo/set_model_state gazebo_msgs/ModelState "model_name: 'talos'
+pose:
+  position:
+    x: 0.0
+    y: 1.0
+    z: 0.0
+  orientation:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0
+twist:
+  linear:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  angular:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+reference_frame: ''"
